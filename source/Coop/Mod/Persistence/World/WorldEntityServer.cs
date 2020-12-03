@@ -1,4 +1,5 @@
 ﻿using System;
+using Coop.Mod.Patch;
 using JetBrains.Annotations;
 using NLog;
 using RailgunNet.Logic;
@@ -43,7 +44,7 @@ namespace Coop.Mod.Persistence.World
                 return;
             }
 
-            if (!m_Environment.CanChangeTimeControlMode)
+            if ( !CoopServer.Instance.AreAllClientsPlaying )
             {
                 RequestedTimeControlMode = null;
                 RequestedTimeControlModeLock = null;
@@ -53,8 +54,8 @@ namespace Coop.Mod.Persistence.World
             }
 
             Logger.Trace("Changing time control to {request}.", RequestedTimeControlMode.Value);
-            State.TimeControl = RequestedTimeControlMode.Value;
-            State.TimeControlLock = RequestedTimeControlModeLock.Value;
+            TimeControl.Instance.SetTimeControlMode(RequestedTimeControlMode.Value);
+            TimeControl.Instance.SetTimeControlModeLock(RequestedTimeControlModeLock.Value);
             RequestedTimeControlMode = null;
             RequestedTimeControlModeLock = null;
         }

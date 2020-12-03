@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Coop.Mod.Patch;
 using JetBrains.Annotations;
 using NLog;
 using RailgunNet.Logic;
@@ -34,7 +35,7 @@ namespace Coop.Mod.Persistence.World
                 throw new ArgumentException(nameof(value));
             }
 
-            bool modelock = m_Environment.GetCurrentCampaign().TimeControlModeLock;
+            bool modelock = TimeControl.Instance.GetTimeControlModeLock();
 
             Logger.Trace(
                 "[{tick}] Request time control mode '{mode}'.",
@@ -61,7 +62,7 @@ namespace Coop.Mod.Persistence.World
                 throw new ArgumentException(nameof(value));
             }
 
-            CampaignTimeControlMode mode = m_Environment.GetCurrentCampaign().TimeControlMode;
+            CampaignTimeControlMode mode = TimeControl.Instance.GetTimeControlMode();
 
             Logger.Trace(
                 "[{tick}] Request time control mode '{mode}'.",
@@ -80,8 +81,8 @@ namespace Coop.Mod.Persistence.World
         /// </summary>
         protected override void OnAdded()
         {
-            m_Environment.TimeControlMode.SetGlobalHandler(RequestTimeControlChange);
-            m_Environment.TimeControlModeLock.SetGlobalHandler(RequestTimeControlLockChange);
+            TimeControl.Instance.TimeControlMode.SetGlobalHandler(RequestTimeControlChange);
+            TimeControl.Instance.TimeControlModeLock.SetGlobalHandler(RequestTimeControlLockChange);
             State.PropertyChanged += State_PropertyChanged;
         }
 
@@ -100,9 +101,7 @@ namespace Coop.Mod.Persistence.World
                         Room.Tick,
                         State.TimeControl);
 
-                    m_Environment.TimeControlMode.SetTyped(
-                        m_Environment.GetCurrentCampaign(),
-                        State.TimeControl);
+                    TimeControl.Instance.SetTimeControlMode(State.TimeControl);
                     break;
                 case nameof(State.TimeControlLock):
                     Logger.Trace(
@@ -110,9 +109,7 @@ namespace Coop.Mod.Persistence.World
                         Room.Tick,
                         State.TimeControlLock);
 
-                    m_Environment.TimeControlModeLock.SetTyped(
-                        m_Environment.GetCurrentCampaign(),
-                        State.TimeControlLock);
+                    TimeControl.Instance.SetTimeControlModeLock(State.TimeControlLock);
                     break;
                 case nameof(State.CampaignTimeTicks):
                     m_Environment.AuthoritativeTime =

@@ -17,20 +17,16 @@ namespace Coop.Mod.Patch.MapSpeedModifier.OnMapSpeedChange
     ///     This class prefixes <c>Campaign::SetTimeSpeed</c> to add a flag to know
     ///     when the user have changed the map speed.
     /// </remarks>
-    [HarmonyPatch(typeof(Campaign))]
-    [HarmonyPatch("SetTimeSpeed")]
+    [HarmonyPatch(typeof(Campaign), nameof(Campaign.SetTimeSpeed))]
     class SetTimePatch
     {
-        /// <summary>
-        /// Determine if the user has changed the map speed using input keys.
-        /// </summary>
-        public static bool CanChangeSpeedControl = false;
-
-
+        
+        [HarmonyPrefix]
+        [HarmonyPatch(MethodType.Normal)]
         static void Prefix()
         {
 
-            CanChangeSpeedControl = true;
+            TimeControl.Instance.CanChangeSpeedControl = true;
 
         }
 

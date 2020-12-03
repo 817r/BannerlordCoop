@@ -39,13 +39,12 @@ namespace Coop.Mod
 
         public void LockTimeControlStopped()
         {
-            Campaign.Current.TimeControlMode = CampaignTimeControlMode.Stop;
-            Campaign.Current.SetTimeControlModeLock(true);
+            TimeControl.Instance.LockStopped();
         }
 
         public void UnlockTimeControl()
         {
-            Campaign.Current.SetTimeControlModeLock(false);
+            TimeControl.Instance.Unlock();
         }
     }
 }
